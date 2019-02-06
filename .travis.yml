@@ -14,6 +14,13 @@ sudo: false
 #
 # https://github.com/travis-ci/apt-package-whitelist/blob/master/ubuntu-precise
 
+notifications:
+  email:
+    recipients:
+      - victor.calderon90@gmail.com
+    on_success: change
+    on_failure: always
+
 addons:
     apt:
         packages:
@@ -27,7 +34,7 @@ env:
         # The following versions are the 'default' for tests, unless
         # overridden underneath. They are defined here in order to save having
         # to repeat them for all configurations.
-        - PYTHON_VERSION=3.7
+        - PYTHON_VERSION=3.6
         - NUMPY_VERSION=stable
         - ASTROPY_VERSION=stable
         - MAIN_CMD='python setup.py'
@@ -37,19 +44,19 @@ env:
         
         # List runtime dependencies for the package that are available as conda
         # packages here.
-        - CONDA_DEPENDENCIES=''
-        - CONDA_DEPENDENCIES_DOC='sphinx-astropy'
+        - CONDA_DEPENDENCIES='cython'
+        - CONDA_DEPENDENCIES_DOC='sphinx-astropy cython'
         
         # List other runtime dependencies for the package that are available as
         # pip packages here.
-        - PIP_DEPENDENCIES=''
+        - PIP_DEPENDENCIES='GitPython'
 
         # Conda packages for affiliated packages are hosted in channel
         # "astropy" while builds for astropy LTS with recent numpy versions
         # are in astropy-ci-extras. If your package uses either of these,
         # add the channels to CONDA_CHANNELS along with any other channels
         # you want to use.
-        - CONDA_CHANNELS='astropy-ci-extras astropy'
+        - CONDA_CHANNELS='astropy-ci-extras astropy conda-forge'
 
         # If there are matplotlib or other GUI tests, uncomment the following
         # line to use the X virtual framebuffer.
@@ -62,7 +69,7 @@ env:
 
     matrix:
         # Make sure that egg_info works without dependencies
-        - PYTHON_VERSION=3.7 SETUP_CMD='egg_info'
+        - PYTHON_VERSION=3.6 SETUP_CMD='egg_info'
 
 
 matrix:
@@ -97,8 +104,6 @@ matrix:
         # versions of Python, we can vary Python and Numpy versions at the same
         # time.
 
-        - os: linux
-          env: PYTHON_VERSION=3.5 NUMPY_VERSION=1.12
         - os: linux
           env: PYTHON_VERSION=3.6 NUMPY_VERSION=1.13
         - os: linux
@@ -150,4 +155,4 @@ script:
 after_success:
     # If coveralls.io is set up for this package, uncomment the line below.
     # The coveragerc file may be customized as needed for your package.
-    # - if [[ $SETUP_CMD == *coverage* ]]; then coveralls --rcfile='cosmo_pair_counting/tests/coveragerc'; fi
+    - if [[ $SETUP_CMD == *coverage* ]]; then coveralls --rcfile='cosmo_pair_counting/tests/coveragerc'; fi
